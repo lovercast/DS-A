@@ -1,0 +1,330 @@
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+\title{Template}
+\author{Name}
+\begin{document}
+\maketitle
+
+\section{section}
+\subsection*{subsection without number}
+text \textbf{bold text} text. Some math: $2+2=5$
+\subsection{subsection}
+text \emph{emphasized text} text. \cite{WC:1953}
+discovered the structure of DNA.
+
+A table:
+\begin{table}[!th]
+\begin{tabular}{|l|c|r|}
+\hline
+first & row & data \\
+second & row & data \\ 
+\hline
+\end{tabular}
+\caption{This is the caption}
+\label{ex:table}
+\end{table}
+
+The table is numbered \ref{ex:table}.
+
+
+\end{document}
+
+\begin{comment}
+Latex cheat sheet
+Document Classes
+book
+report
+article
+letter
+slides
+\documentclass{class}, \begin{document} ... \end{document}
+
+Common documentclass options
+10pt/11pt/12pt
+letterpaper/a4paper
+twocolumn
+twoside
+landscape
+draft [double space lines]
+
+Packages
+before \begin{document} use \usepackage{package}
+fullpage
+anysize - \marginsize{l}{r}{t}{b}
+multicol - \begin{multicols}{n}
+latexsym - use latex symbol font
+graphicx - \includegraphics[width=x]{file}
+url - \url{http://...}
+
+Title
+Usage: before \begin{document}. The decalration \maketitle goes at the top of the document
+\author{text}
+\title{text}
+\date{text}
+
+Miscellaneous
+\pagestyle{empty}
+\tableofcontents
+
+Document Structure
+\part{title}    subsubsection{title}
+\chapter{title} \paragraph{title}
+\section{title} \subparagraph{title}
+\subsection{title}
+Use a * as in \section*{title} to not number a particular item -
+these items will not have entries in the table of contents.
+
+Text environments
+\begin{comment}
+\begin{quote}
+\begin{quotation} 
+\begin{verse}
+
+Lists
+\begin{enumerate}
+itemize
+description
+\item
+\item[x] use item instead of normal bullet or number -- required for descriptions
+
+References
+\label{marker} Set a marker for cross-reference, 
+    often of the form \label{sec:item}.
+\ref{marker}
+\pageref{marker}
+\footnote{text}
+
+Floating bodies
+\begin{table}[place] add numbered table
+\begin{figure}]place] add numbered figure
+\begin{equation}[place]
+\captions{text}
+The place is a list valid placements for the body. t=top, h=here, b=bottom, p=separate page, !=place even if ugly
+
+Text properties
+FontFace
+command         declaration         
+textrm          rmfamily
+textsf          sf
+texttt          tt
+textmd          md
+textbf          bf
+textup          upshape
+textit          itshape
+textsl          slshape
+textsc          scshape
+emph            em
+textnormal      normalfont
+underline
+
+Fonst Size
+\tiny
+\scriptsize
+\footnotesize
+\small
+\normalsize
+\large
+\Large
+\LARGE
+\huge
+\Huge
+
+Verbatim Text
+\begin{verbatim}
+\begin{verbatim*}
+\verb!text!
+
+Justification
+\begin{center}      \centering
+\begin{flushleft}   \raggedright
+\begin{flushright}  \raggedleft
+
+Miscellaneous
+\linespread{x}      changes the line spacing by the multiplier x.
+
+Text-mode symbols
+Symbols
+\&      \_      \ldots      \textbullet
+\$      \^{}    \textbar    \textbackslash
+\%      \#      \S
+\0
+hyphen -
+en-dash --
+em-dash ---
+
+Line and page breaks
+\\               begin a new line without new paragraph
+\\*              prohibi pagebreak after linebreak.
+\kill           don't print current line
+\pagebreak      start new page
+\noindent       do not indent current line
+
+Misc
+\today
+$sim$
+\@.             indicate that the . ends a sentence after following an upper case letter
+\hspace{l}      horizontal space of length l (ex l = 20pt).
+\vspace{l}      Vertical space of length l.
+\rule{w}{h}     line of width w and height h.
+
+Tabular environments
+tabbing environment
+\= set tab stop     \> go to tab stop
+
+tabular environment
+\begin{array}[pos]{cols}
+\begin{tabular}[pos]{cols}
+\begin{tabular*}{width}[pos]{cols}
+
+tabular column specification
+l               left-justified
+c               centred
+r               right justified
+p{width}        same as \parbox[t]{width}
+@{decl}         inset decl instead of inter-column space.
+|               insets a verical line between columns.
+
+Example
+\begin{tabular}{| l | c | r |}
+    \hline
+    1 & 2 & 3 \\
+    \hline
+    4 & 5 & 6\\
+    \hline
+    7 & 8 & 9 \\
+    \hline
+\end{tabular}
+
+tabular elements
+\hline
+\cline{x-y} horizontal line across columns x through y
+\multicolumn{n}{cols}{text}
+    a cell that spancs n columns, with ocls column specification.
+
+MathMode
+for inline math, use \(...\) or $ ... $. For displayed math,
+use \[...\] or \begin{equation}.
+superscript ^{x} subscript _{x}
+\frac{x}{y}     \sum_{k=1}^n
+\sqrt[n]{x}     \prod_{k=1}^n
+
+Math mode symbols
+\leq    \geq    \neq    \approx 
+\times      \div    \pm     \cdot   
+^{\circ}    \circ   \prime  \cdots
+infty   neg     wedge   vee
+supset  forall  in  rightarrow
+subset  exists  notin   Rightarrow
+cup     cap     min     Leftrightarrow
+dot a   hat a   bar a   tilde a 
+
+Bibliography and Citations
+When using Bibtex, you need to run latex, bibtex and latex twice more to resolce dependencies.
+
+Citation types
+\cite{key}
+\citeA{key}
+\citeN{key}
+\shortcite{key}
+\shortciteA{key}
+\shortciteN{key}
+\citeyear{key}
+
+All the above have an NP variant without parentheses eg. \citeNP
+
+BIBTEX entry types
+@article
+@book
+@booklet
+@conference
+@inbook
+@incollection
+@misc
+@phdthesis
+@proceedings
+@techreport
+@unpublished
+
+Bibtex fields
+address
+author
+booktitle
+chapter
+edition
+editor
+institution
+journal
+key
+month
+note
+number
+organization
+pages
+publisher
+school
+series
+title
+type
+volume
+year
+
+Common Bibtex style files
+abbrv   Standard    abstract    alpha with abstract
+alpha   Standard    apa     APA
+plain   Standard    unsrt   unsorted
+
+The latex document should have the following two lines just
+before the \end{document}, where bibfile.bib is the name of the Bibtex file.
+
+\bibliographystyle{plain}
+\bibliography{bibfile}
+
+Bibtex example
+The bibtex database goes in a file called file.bib, which is processed with 
+bibtex file.
+
+@String{N = {Na\-ture}}
+@Article{WC:1953,
+author  = {James Watson and Francis Crick},
+title   = {A structure for Deoxyribose Nucleic Acid},
+journal = N,
+volume  = {171},
+pages   = {737},
+year    = 1953
+}
+
+Sample Latex document
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+\title{Template}
+\author{Name}
+\begin{document}
+\maketitle
+
+\section{section}
+\subsection*{subsection without number}
+text \textbf{bold text} text. Some math: $2+2=5$
+\subsection{subsection}
+text \emph{emphasized text} text. \cite{WC:1953}
+discovered the structure of DNA.
+
+A table:
+\begin{table}[!th]
+\begin{tabular}{|l|c|r|}
+\hline
+first & row & data \\
+second & row & data \\ 
+\hline
+\end{tabular}
+\caption{This is the caption}
+\label{ex:table}
+\end{table}
+
+The table is numbered \ref{ex:table}.
+\bibliographystyle{plain}
+\bibliography{file.bib}
+\end{document}
+
+
+
+\end{comment}

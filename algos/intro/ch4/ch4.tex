@@ -1,0 +1,47 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{fullpage}
+\usepackage{verbatim}
+\usepackage{amsmath}
+\title{LCRS Algorithms Ch 4 Notes}
+\author{}
+\date{}
+\begin{document}
+\maketitle
+\section{Methods for Solving recurrences}
+\begin{itemize}
+\item \textbf{substution method,}we guess a bound and then use mathematical induction to prove our guess correct.
+\item \textbf{recursion-tree method} converts the recurrennce into a tree whose nodes represent the costs incurred at vvarious levels of the recursion. We use techniques for bounding summations to solve the recurrence.
+\item \textbf{master method} provides bounds for recurrences of the form
+\end{itemize}
+\begin{equation}
+    T(n) = aT(n/b) + f(n), \
+\end{equation}
+where \(a \geq 1, b > 1, f(n)\) a given function.
+Note that $f(n)$ is the time of the steps at each level of recursion.
+
+Examples of problems that the master method provides bounds for:
+\begin{itemize}
+    \item maximum-subarray problem
+    \item matrix multiplication.
+\end{itemize}
+
+Complexity of \textsc{Merge Sort} algorithm:
+\[
+T(n) = 2T(n/2) + \Theta(n),
+\]
+
+Because at each step, the algorithm splits the list  of numbers in half, and then does $n$ comparisons.
+
+\subsection{The Maximum-subarray problem}
+\subsubsection*{A brute force solution}
+Consider a brute force solution to the stock picking problem where we examine every pair of possible buy, sell pairs and then pick the best one. If we consider each possible pair of buy-sell dates, we would consider $\binom{n}{2}$ possibilities, which is $\Theta(n^2).$
+\subsubsection*{A transformation}%
+\label{ssub:a_transformation}
+Map each day onto the difference in price with the previous day, and solve the 
+highest profit problem by solving the maximum subarray problem.
+
+
+ssub
+
+
+\end{document}

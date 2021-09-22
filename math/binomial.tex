@@ -1,0 +1,22 @@
+\documentclass[11pt,a4paper]{article}
+\begin{document}
+Derivation of the formula for the binomial coefficient:
+Choose the first element from a set of order r. We have r choices.
+In general, choose the ith element from a subset of order r-i-1. We have r-i-q choices.
+After choosing k elements, we have a total of $r(r-1)(r-2)\cdots(r-k+1)$ combinations, 
+but this set of combinations contains repeats. For each set k-element subset, 
+there are k! orderings. Hence the formula for the binomial coefficient,
+$$
+\binom{r}{k} = \frac{r(r-1)\cdots(r-k+1)}{k!} 
+$$
+
+\begin{math}
+    (x+y)^n = \sum_{k} \binom{n}{k} x^k y^{n-k}
+    \binom{x}{y} = \binom{x-1}{y} + \binom{x-1}{y-1}
+    \binom{x}{y} = \binom{x}{x-y}
+    \binom{x}{y} = \frac{x}{y} \binom{x-1}{y-1}
+    \binom{r}{k} = 
+    (r-k)\binom{r}{k} = r\binom{r-1}{k} = r\binom{r-1}{r-k-1}.
+\end{math}
+\end{document}
+
