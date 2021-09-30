@@ -5,7 +5,7 @@ Primes results
         Positives:      4793
         Negatives:      995207
         True Positive Rate:     0.4793%
-        True Positive Rate:     99.5207%
+        False Negative Rate:     99.5207%
 ==============
 Pseudos results
 ==============
