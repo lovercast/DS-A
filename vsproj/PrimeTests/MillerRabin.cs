@@ -20,7 +20,7 @@ namespace PrimeTests
         /// Generate several random witnesses a.
         /// Evaluate several witnesses against n:
         /// If a^d not congruent to +-1 mod n and 
-        /// if a^(2^r d) not congruent to -1 for all 0<= r <= s, 
+        /// if a^(2^r d) not congruent to -1 for all 1< r < s, 
         /// then n is definitely composite and a is a witness for 
         /// n's compositeness.
         /// </summary>
