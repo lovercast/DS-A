@@ -1,0 +1,17 @@
+==============
+Primes results
+==============
+        Numbers ran: 1000000
+        Positives:      4793
+        Negatives:      995207
+        True Positive Rate:     0.4793%
+        True Positive Rate:     99.5207%
+==============
+Pseudos results
+==============
+        Numbers ran: 380
+        Positives:      1
+        Negatives:      379
+        Negatives:      379
+        False Positive Rate:    0.26315790601074696%
+        True Negative Rate:     99.73683953285217%
