@@ -105,13 +105,13 @@ namespace PrimeTests
             int power = b;
 
             while (exp > 0) {
-                power *= power;
-                power %= n;
                 if (exp % 2 == 1)
                 {
                     result *= power;
                     result %= n;
                 }
+                power *= power;
+                power %= n;
                 exp >>= 1;
             }
 
