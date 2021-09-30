@@ -1,0 +1,144 @@
+  Hello world!
+\end {markdown}
+
+\begin{document}
+
+\rightline{Levi Overcast}
+\rightline{DSA F2021}
+\rightline{October 1}
+
+    \vspace{5pc}
+    \centerline{\huge Parallel \& Distributed Computing}
+    \vspace{0.5pc}
+    \centerline{\huge Homework 1}
+    \vspace{3pc}
+
+
+    \begin{enumerate}
+            \item Define parallel programming and how it is different from concurrent programming.
+            \vspace{0.5pc}
+
+            % Answer
+
+            \quad A program is said to be parallel if multiple {\it instructions} are executed at the same time.
+
+            \quad On the other hand, a program is said to be concurrent if multiple {\it tasks} are {\it in progress} at the same time.
+
+            \quad Consider a program that adds vectors. On modern processors under the {\sc x86} architecture, a single 256-bit {\sc YMM} register can pack eight 32-bit floating point numbers and perform a vectorized addition on them with a single instruction. This is an example of {\it parallelism without concurrency}.
+
+            \quad Imagine a data server that can multitask client processes. Suppose two clients both want write access to the same data at the same time. Obviously, the server cannot deliver write access to both processes in parallel. The server might implement a mutex lock to solve this problem. This is an example of {\it concurrency without parallelism}.
+
+
+            \item Exercise 1.3 from Chapter 1 in Pacheco.
+
+            {\bf 1.3} \>\> Try to write pseudo-code for the tree-structured global sum illustrated in Figure 1.1. Assume the number of cores is a power of two (1, 2, 4, 8, ...).
+            % Answer
+            \begin{verbatim}
+    // suppose the IDs are {0..num_cores}
+    int num_cores;
+    core_list cores = create_cores(num_cores);
+    list<int> powers = {1..2^lg(num_cores)};
+    for (p : powers) {
+        /* Cores which are 0 mod 2*p receive
+         * from the core which is this.ID+p. */
+        cores.recv(p);
+        /* Cores which are p mod 2*p will send
+         * to the core which is this.ID-p. */
+        cores.send(p);
+        cores.add();
+    }
+    return cores[0].sum;
+
+
+\end{verbatim}
+
+            \item Optional: Chapter 1: 1.4.
+
+            {\bf 1.4} \>\> Implement this algorithm in pseudo-code using the bitwise exclusive or and the left-shift operator.
+
+            % Answer
+            \quad As above, the routines that do all the work here are {\tt cores.send} and {\tt cores.receive}, which in this case accept bit vectors that identify the cores which do the respective operations.
+
+            \begin{verbatim}
+rvector = svector = 0; /* global */
+
+#private {
+    core_id; /* bit vector, a power of 2 */
+    sum;
+}
+
+assign_ids(); /* tell each core what its id is */
+compute_id_send(); /* tell each core to compute the id that it will send to */
+/* lowest power p of 2 that its id is not remainder 0, then subtract the modulus. */
+
+int bit;
+list<int> powers = {1..2^(lg(num_cores)-1)};
+for (p : powers) {
+    rvector = 0;
+    for (bit = 1; bit < num_cores; bit <<= 2*p) /* mask, selecting for */
+        rvector = rvector ^ bit;                /* 0s mod 2, then 0s mod 4, etc. */
+    svector = rvector << p; /* offset to calculate the senders. */
+
+    cores.sync();
+    cores.receive(); /* Each core will & its id with the global rvector. */
+    cores.send(); /* Similarly. */
+    sum += cores.add(); /* 0 if not receiving. */
+}
+
+/* end parallel */
+return cores[0].sum;
+\end{verbatim}
+
+
+            \item Exercises 2.6, 2.7, 2.10 from Chapter 2.
+
+
+            {\bf 2.6}  \>\>   Suppose that a vector processor has a memory system in which it takes 10 cycles to load a single 64-bit word from memory.
+            How many memory banks are needed so that a stream of loads can, on average, require only one cycle per load?
+            \vspace{0.5pc}
+            % Answer
+
+            {\bf 2.7}  \>\>   Discuss the differences in how a GPU and a vector processor might execute the following code:
+            \begin{verbatim}
+                sum = 0.0;
+                for (i = 0; i < ; i++) {
+                    y[i] += a*x[i];
+                    sum += z[i]*z[i];
+                }
+            \end{verbatim}
+            \vspace{0.5pc}
+
+            % Answer
+
+            \quad
+
+            {\bf 2.10}  \>\>   Suppose a program must execute $10^{12}$ instructions in order to solve a particular problem. Suppose further that a single processor system can solve the problem in $10^{6}$ seconds (about 11.6 days). So, on average, the single processor system executes $10^{6}$ or a million instructions per second. Now suppose that the program has been parallelized for execution on a distributed-memory system. Suppose also that if the parallel program uses $p$ processors, each processor will execute $10^{12}/p$ instructions and each processor must send $10^{9}(p-1)$ messages. Finally, suppose that there is no additional overhead in executing the parallel program. That is, the program will complete after each processor has executed all of its instructions and sent all of its messages, and there won’t be any delays due to things such as waiting for messages.
+
+            (a.) Suppose it takes $10^{-9}$ seconds to send a message. How long will it take the program to run with 1000 processors, if each processor is as fast as the single processor on which the serial program was run?
+            \vspace{0.5pc}
+
+            % Answer
+            %
+            \begin{align*}
+              \textrm{Total Time} &= 1000 \textrm{ processors} \times (10^{12}/p \times 10^{-6} \textrm{sec/instr} +  10^{9}(1000-1) \times 10^{-9}\textrm{sec/msg})\\
+                                  &= 10^{6} \textrm{ seconds spent calculating} + 999 \textrm{ seconds spent messaging}\\
+                                  &= 10^{6} \textrm{ seconds}.\\
+            \end{align*}
+
+            (b.) Suppose it takes $10^{-3}$ seconds to send a message. How long will it take the program to run with 1000 processors?
+            \vspace{0.5pc}
+
+            % Answer
+            \begin{align*}
+              \textrm{Total Time} &= 1000 \textrm{ processors} \times (10^{12}/p \times  10^{-6} \textrm{sec/instr} +  10^{9}(1000-1) \times 10^{-3}\textrm{sec/msg})\\
+                                  &= 10^{6} \textrm{ seconds spent calculating} + 10^{6} \times 999 \textrm{ seconds spent messaging} \\
+                                  &= 10^{9} \textrm{ seconds (31 years)}.\\
+            \end{align*}
+
+
+
+
+    \end{enumerate}
+
+
+\end{document}

@@ -1,0 +1,184 @@
+\documentclass[11pt,epsfig,letterpaper]{article}
+
+\setlength{\textheight}{9in}
+\setlength{\textwidth}{6.5in}
+\setlength{\headheight}{0in}
+\setlength{\headsep}{0in}
+\setlength{\topmargin}{0in}
+\setlength{\oddsidemargin}{0in}
+\setlength{\evensidemargin}{0in}
+\setlength{\parindent}{.3in}
+
+
+\usepackage{amsmath}
+\usepackage{verbatim}
+\usepackage{markdown}
+\usepackage{hyperref}
+
+\begin{document}
+
+\rightline{Levi Overcast}
+\rightline{DSA F21}
+\rightline{October 1}
+
+    \vspace{5pc}
+    \centerline{\huge Parallel \& Distributed Computing}
+    \vspace{0.5pc}
+    \centerline{\huge Homework 1}
+    \vspace{3pc}
+
+
+    \begin{enumerate}
+            \item Define parallel programming and how it is different from concurrent programming.
+            \vspace{0.5pc}
+
+            % Answer
+
+            \quad A program is said to be parallel if multiple {\it instructions} are executed at the same time.
+
+            \quad On the other hand, a program is said to be concurrent if multiple {\it tasks} are {\it in progress} at the same time.
+
+            \quad Consider a program that adds vectors. On modern processors under the {\sc x86} architecture, a single 512-bit {\sc ZMM} register can pack sixteen 32-bit floating point numbers and perform a vectorized addition on them with a single instruction. This is an example of {\it parallelism without concurrency}.
+
+            \quad Imagine a data server that can multitask client processes. Suppose two clients both want write access to the same data at the same time. Obviously, the server cannot deliver write access to both processes in parallel. The server might implement a mutex lock to solve this problem. This is an example of {\it concurrency without parallelism}.
+
+
+            \item Exercise 1.3 from Chapter 1 in Pacheco.
+
+            {\bf 1.3} \>\> Try to write pseudo-code for the tree-structured global sum illustrated in Figure 1.1. Assume the number of cores is a power of two (1, 2, 4, 8, ...).
+            % Answer
+            \begin{verbatim}
+    // suppose the IDs are {0..num_cores}
+    int num_cores;
+    core_list cores = create_cores(num_cores);
+    list<int> powers = {1..2^lg(num_cores)};
+    for (p : powers) {
+        /* Cores which are 0 mod 2*p receive
+         * from the core which is this.ID+p. */
+        cores.recv(p);
+        /* Cores which are p mod 2*p will send
+         * to the core which is this.ID-p. */
+        cores.send(p);
+        cores.add();
+    }
+    return cores[0].sum;
+
+
+\end{verbatim}
+
+            \item Optional: Chapter 1: 1.4.
+
+            {\bf 1.4} \>\> Implement this algorithm in pseudo-code using the bitwise exclusive or and the left-shift operator.
+
+            % Answer
+            \quad As above, the routines that do all the work here are {\tt cores.send} and {\tt cores.receive}, which in this case accept bit vectors that identify the cores which do the respective operations.
+
+            \begin{verbatim}
+rvector = svector = 0; /* global */
+
+private {
+    core_id; /* bit vector, a power of 2 */
+    sum;
+}
+
+assign_ids(); /* tell each core what its id is */
+compute_id_send(); /* tell each core to compute the id that it will send to */
+/* lowest power p of 2 that its id is not remainder 0, then subtract the modulus. */
+
+int bit;
+list<int> powers = {1..2^(lg(num_cores)-1)};
+for (p : powers) {
+    rvector = 0;
+    for (bit = 1; bit < num_cores; bit <<= 2*p) /* mask, selecting for */
+        rvector = rvector ^ bit;                /* 0s mod 2, then 0s mod 4, etc. */
+    svector = rvector << p; /* offset to calculate the senders. */
+
+    cores.sync();
+    cores.receive(); /* Each core will & its id with the global rvector. */
+    cores.send(); /* Similarly. */
+    sum += cores.add(); /* 0 if not receiving. */
+}
+
+/* end parallel */
+return cores[0].sum;
+\end{verbatim}
+
+
+            \item Exercises 2.6, 2.7, 2.10 from Chapter 2.
+
+
+            {\bf 2.6}  \>\>   Suppose that a vector processor has a memory system in which it takes 10 cycles to load a single 64-bit word from memory.
+            How many memory banks are needed so that a stream of loads can, on average, require only one cycle per load?
+            \vspace{0.5pc}
+            % Answer
+            %
+
+            \quad Given that memory latency is $10$ clock cycles, we need at least $10$ memory banks to achieve an amortized throughput of $1$ word per clock cycle in the long run. 16 banks is preferable since it is simpler and more efficient to implement a whole number of bits for bank addressing.
+
+            \quad Given that the processor is a vector processor, a vector register can chain the load/store operations so that the results of load operations may be stored before all the load operations are completed. The result is that after the first ten cycles, the result of the first load operation will store, and from then on one store operation will complete per clock cycle. The average throughput limits to 1.
+
+            {\bf 2.7}  \>\>   Discuss the differences in how a GPU and a vector processor might execute the following code:
+            \begin{verbatim}
+                sum = 0.0;
+                for (i = 0; i < n; i++) {
+                    y[i] += a*x[i];
+                    sum += z[i]*z[i];
+                }
+            \end{verbatim}
+            \vspace{0.5pc}
+
+            % Answer
+            %
+            \quad The term {\it GPU} designates a broad class of implementations, ranging from multi-threaded SIMD model to approaching a MIMD model in modern systems. The qualifications for breadth apply doubly for the term {\it vector processor}, which is used to describe systems as diverse as the {\tt CRAY-2} supercomputer and Intel's AVX SIMD extension.
+
+            \quad That said, I may attempt to speak in general terms.
+
+            \quad If we suppose our vector processor is composed of a single core, then the biggest difference between the two will be that the GPU uses thread-level parallelism without instruction-level parallelism, and the vector processor uses instruction-level parallelism without thread-level parallelism.
+
+            \quad Many of the other differences are implementation-dependent. A modern vector processor would typically have multiple cores, though not as many as the GPU, but with a higher clock rate.
+
+            \quad The {\tt CRAY-2} had eight vector registers composed of 64 64-bit elements, along with 64-bit scalar registers. And each background processor had a set of functional units which were capable of operating in parallel.\footnote{The manual is available for free download.\
+            \url{http://www.mirrorservice.org/sites/www.bitsavers.org/pdf/cray/CRAY-2/HR-0200-0D_CRAY-2_Computer_Systems_Functional_Description_Jun89.pdf}}
+            The execution of the above loop might have involved loading vector registers with \(x, y\) and \(z\), loading scalar registers with $a$ and $sum$, computing the addition and multiplication operations in parallel in functional units spread over the background processors and chaining (`tailgating' in the manual) the results in the vector registers before storing.
+
+            \quad By contrast, on a modern GPU, the execution of the loop might begin by carving $x, y, z$ into blocks of threads, performing all the scalar multiplications on $x$ and the dot-product multiplications on $z$ first, since GPUs are optimized for executing one instruction on a datastream, then executing the add operations and finally the store operations on $y$ and $sum$.
+
+
+            %\quad How do GPUs and vector processors differ in dividing data? Can a vector processor be multithreaded? How do vector processors and GPUs act on data? Can GPUs perform chaining of instructions? Do functional units in vector processors operate in parallel? How does chaining enter the picture?
+            %In Cray-2, functional units operate in parallel. Each functional unit returns one result per clock phase.
+            % What are GPUs better for than vector processors or SIMD processors?
+
+
+
+            \vspace{1pc}
+
+            {\bf 2.10}  \>\>   Suppose a program must execute $10^{12}$ instructions in order to solve a particular problem. Suppose further that a single processor system can solve the problem in $10^{6}$ seconds (about 11.6 days). So, on average, the single processor system executes $10^{6}$ or a million instructions per second. Now suppose that the program has been parallelized for execution on a distributed-memory system. Suppose also that if the parallel program uses $p$ processors, each processor will execute $10^{12}/p$ instructions and each processor must send $10^{9}(p-1)$ messages. Finally, suppose that there is no additional overhead in executing the parallel program. That is, the program will complete after each processor has executed all of its instructions and sent all of its messages, and there won’t be any delays due to things such as waiting for messages.
+
+            (a.) Suppose it takes $10^{-9}$ seconds to send a message. How long will it take the program to run with 1000 processors, if each processor is as fast as the single processor on which the serial program was run?
+            \vspace{0.5pc}
+
+            % Answer
+            %
+            \begin{align*}
+              \textrm{Total Time} &= 1000 \textrm{ processors} \times (10^{12}/p \times 10^{-6} \textrm{sec/instr} +  10^{9}(1000-1) \times 10^{-9}\textrm{sec/msg})\\
+                                  &= 10^{6} \textrm{ seconds spent calculating} + 999 \textrm{ seconds spent messaging}\\
+                                  &= 10^{6} \textrm{ seconds}.\\
+            \end{align*}
+
+            (b.) Suppose it takes $10^{-3}$ seconds to send a message. How long will it take the program to run with 1000 processors?
+            \vspace{0.5pc}
+
+            % Answer
+            \begin{align*}
+              \textrm{Total Time} &= 1000 \textrm{ processors} \times (10^{12}/p \times  10^{-6} \textrm{sec/instr} +  10^{9}(1000-1) \times 10^{-3}\textrm{sec/msg})\\
+                                  &= 10^{6} \textrm{ seconds spent calculating} + 10^{6} \times 999 \textrm{ seconds spent messaging} \\
+                                  &= 10^{9} \textrm{ seconds (31 years)}.\\
+            \end{align*}
+
+
+
+            
+    \end{enumerate}
+
+
+\end{document}
