@@ -34,6 +34,7 @@
             {\bf 4.1} \>\> When we discussed matrix-vector multiplication we assumed that both $m$ and $n$, the number of rows and the number of columns, respectively, were evenly divisible by $t$, the number of threads. How do the formulas for the assignments change if this is not the case?
             \vspace{0.5pc}
             % Answer
+
             \quad The formulas as given only assume that $m$ is divisible by $t$, the number of threads. Each thread loops over every value of $n$. And this is all to the good since array are stored contiguously in memory, so dividing individual rows by threads would add unnecessary jumps to the code.
             \quad However, assuming that the number of columns is evenly divisible by the thread count is not a general solution. Suppose there were a non-zero remainder in the number of rows. Then the corresponding entries in the output vector would end up unintentionally as zeros.
             \quad To fix this, simply assign all as normal except give the last thread its normal portion plus any remainder.
@@ -76,6 +77,7 @@ my_last_row = (my_id == nthreads - 1) ? my_first_row + stride
             {\bf 4.4}\>\> The performance of the $\pi$ calculation program that uses mutexes remains roughly constant once we increase the number of threads beyond the number of available CPUs. What does this suggest about how the threads are scheduled on the available processors?
             \vspace{0.5pc}
             % Answer
+
             \quad Suppose each CPU scheduled its threads totally equally, without caring about which ones are working and which ones are waiting. In a program with mutex locks, at most one thread among all the scheduled threads is running over a critical section at any given moment. If the CPU gives equal priority to the thread that is locked as to the thread that is working in a critical section, then as we add threads, I would expect a slowdown, because the number of threads that are locked at any given time will increase.
 
             \quad Given that the performance of the program is roughly constant as we increase the number of threads beyond the number of CPUs, I conclude that each CPU schedules its threads proportionally to the work that they are given. Threads which are locked get less CPU time and threads which aren't get more.
@@ -84,6 +86,7 @@ my_last_row = (my_id == nthreads - 1) ? my_first_row + stride
             {\bf 4.5}\>\> Modify the mutex version of the $\pi$ calculation program so that the critical section is in the for loop. How does the performance of this version compare to the performance of the original busy-wait version? How might we explain this?
             \vspace{0.5pc}
             % Answer
+
             \quad The following results were taken with $n = 100,000$.
 
             \begin{center}

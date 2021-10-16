@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.9.13)  15 OCT 2021 23:39
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.9.13)  15 OCT 2021 23:53
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -402,7 +402,7 @@ LaTeX Info: Redefining \nameref on input line 18.
 \openout6 = `hw2.out'.
 
 
-Overfull \hbox (7.00377pt too wide) in paragraph at lines 57--69
+Overfull \hbox (7.00377pt too wide) in paragraph at lines 58--70
  [] 
  []
 
@@ -410,10 +410,10 @@ Overfull \hbox (7.00377pt too wide) in paragraph at lines 57--69
 
 {/usr/local/texlive/2021/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 [2]
-./hw2.tex:124: Misplaced \crcr.
+./hw2.tex:127: Misplaced \crcr.
 \endtabular ->\crcr 
                     \egroup \egroup $\egroup 
-l.124             \end{tabular}
+l.127             \end{tabular}
                                
 I can't figure out why you would want to use a tab mark
 or \cr or \span just now. If something like a right brace
@@ -421,10 +421,10 @@ up above has ended a previous alignment prematurely,
 you're probably due for more error messages, and you
 might try typing `S' now just to see what is salvageable.
 
-./hw2.tex:124: Extra }, or forgotten \endgroup.
+./hw2.tex:127: Extra }, or forgotten \endgroup.
 \endtabular ->\crcr \egroup 
                             \egroup $\egroup 
-l.124             \end{tabular}
+l.127             \end{tabular}
                                
 I've deleted a group-closing symbol because it seems to be
 spurious, as in `$x}$'. But perhaps the } is legitimate and
@@ -432,10 +432,10 @@ you forgot something else, as in `\hbox{$x}'. In such cases
 the way to recover is to insert both the forgotten and the
 deleted material, e.g., by typing `I$}'.
 
-./hw2.tex:124: Extra }, or forgotten \endgroup.
+./hw2.tex:127: Extra }, or forgotten \endgroup.
 \endtabular ->\crcr \egroup \egroup 
                                     $\egroup 
-l.124             \end{tabular}
+l.127             \end{tabular}
                                
 I've deleted a group-closing symbol because it seems to be
 spurious, as in `$x}$'. But perhaps the } is legitimate and
@@ -443,10 +443,10 @@ you forgot something else, as in `\hbox{$x}'. In such cases
 the way to recover is to insert both the forgotten and the
 deleted material, e.g., by typing `I$}'.
 
-./hw2.tex:124: Extra }, or forgotten $.
+./hw2.tex:127: Extra }, or forgotten $.
 <recently read> \egroup 
                         
-l.124             \end{tabular}
+l.127             \end{tabular}
                                
 I've deleted a group-closing symbol because it seems to be
 spurious, as in `$x}$'. But perhaps the } is legitimate and
@@ -455,23 +455,23 @@ the way to recover is to insert both the forgotten and the
 deleted material, e.g., by typing `I$}'.
 
 
-./hw2.tex:124: LaTeX Error: \begin{center} on input line 89 ended by \end{tabul
+./hw2.tex:127: LaTeX Error: \begin{center} on input line 92 ended by \end{tabul
 ar}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.124             \end{tabular}
+l.127             \end{tabular}
                                
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
-./hw2.tex:124: Missing $ inserted.
+./hw2.tex:127: Missing $ inserted.
 <inserted text> 
                 $
-l.124             \end{tabular}
+l.127             \end{tabular}
                                
 I've inserted something that you may have forgotten.
 (See the <inserted text> above.)
@@ -480,62 +480,62 @@ really didn't forget anything, try typing `2' now; then
 my insertion and my current dilemma will both disappear.
 
 
-./hw2.tex:125: LaTeX Error: \begin{enumerate} on input line 31 ended by \end{ce
+./hw2.tex:128: LaTeX Error: \begin{enumerate} on input line 31 ended by \end{ce
 nter}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.125             \end{center}
+l.128             \end{center}
                               
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 
-./hw2.tex:131: LaTeX Error: Lonely \item--perhaps a missing list environment.
+./hw2.tex:134: LaTeX Error: Lonely \item--perhaps a missing list environment.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.131             \item E
+l.134             \item E
                          xercise 4.6 \\
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 [3]
 
-./hw2.tex:183: LaTeX Error: Lonely \item--perhaps a missing list environment.
+./hw2.tex:186: LaTeX Error: Lonely \item--perhaps a missing list environment.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.183             \item E
+l.186             \item E
                          xercise 4.8 \\
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 [4] [5]
 
-./hw2.tex:251: LaTeX Error: \begin{document} ended by \end{enumerate}.
+./hw2.tex:254: LaTeX Error: \begin{document} ended by \end{enumerate}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.251     \end{enumerate}
+l.254     \end{enumerate}
                          
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
-./hw2.tex:251: Extra \endgroup.
+./hw2.tex:254: Extra \endgroup.
 <recently read> \endgroup 
                           
-l.251     \end{enumerate}
+l.254     \end{enumerate}
                          
 Things are pretty mixed up, but I think the worst is over.
 
@@ -560,7 +560,7 @@ ocal/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/loca
 l/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/t
 exlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/te
 xlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb>
-Output written on hw2.pdf (5 pages, 119951 bytes).
+Output written on hw2.pdf (5 pages, 119958 bytes).
 PDF statistics:
  81 PDF objects out of 1000 (max. 8388607)
  64 compressed objects within 1 object stream
