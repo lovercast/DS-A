@@ -1,0 +1,68 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "clang debug",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${fileDirname}/${fileBasenameNoExtension}",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "isDefault": true,
+            "MIMode": "lldb",
+            "preLaunchTask": "C/C++: clang build active file",
+            "sourceFileMap" : {
+                "/build/libc*": "/usr/local/src/Libc-1439.40.11"
+            }
+        },
+        {
+            "name": "lab2",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${fileDirname}/${fileBasenameNoExtension}",
+            "args": [
+                "-x",
+                "2",
+                "1",
+                "1048576"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "isDefault": true,
+            "MIMode": "lldb",
+            "preLaunchTask": "C omp",
+            "sourceFileMap" : {
+                "/build/libc*": "/usr/local/src/Libc-1439.40.11"
+            }
+        },
+        {
+            "name": "matrix vector mul",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${fileDirname}/${fileBasenameNoExtension}",
+            "args": [
+                "10000",
+                "10000",
+                "1"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "isDefault": true,
+            "MIMode": "lldb",
+            "preLaunchTask": "C omp",
+            "sourceFileMap" : {
+                "/build/libc*": "/usr/local/src/Libc-1439.40.11"
+            }
+        }
+    ]
+}

@@ -1,0 +1,93 @@
+\message{ !name(hw2.tex)}\documentclass[11pt,epsfig,letterpaper]{article}
+
+\setlength{\textheight}{9in}
+\setlength{\textwidth}{6.5in}
+\setlength{\headheight}{0in}
+\setlength{\headsep}{0in}
+\setlength{\topmargin}{0in}
+\setlength{\oddsidemargin}{0in}
+\setlength{\evensidemargin}{0in}
+\setlength{\parindent}{.3in}
+
+
+\usepackage{amsmath}
+\usepackage{verbatim}
+\usepackage{markdown}
+\usepackage{hyperref}
+
+\begin{document}
+
+\message{ !name(hw2.tex) !offset(-3) }
+
+
+\rightline{Levi Overcast}
+\rightline{DSA F21}
+\rightline{October 17}
+
+    \vspace{5pc}
+    \centerline{\huge Parallel \& Distributed Computing}
+    \vspace{0.5pc}
+    \centerline{\huge Homework 2}
+    \vspace{3pc}
+
+
+    \begin{enumerate}
+
+            \item Exercise 4.1 from Chapter 4 in Pacheco
+            {\bf 4.1} \>\> When we discussed matrix-vector multiplication we assumed that both $m$ and $n$, the number of rows and the number of columns, respectively, were evenly divisible by $t$, the number of threads. How do the formulas for the assignments change if this is not the case?
+            \vspace{0.5pc}
+            % Answer
+            \quad The formulas as given only assume that $m$ is divisible by $t$, the number of threads. Each thread loops over every value of $n$. And this is all to the good since array are stored contiguously in memory, so dividing individual rows by threads would add unnecessary jumps to the code.
+            \quad However, assuming that the number of columns is evenly divisible by the thread count is not a general solution. Suppose there were a non-zero remainder in the number of rows. Then the corresponding entries in the output vector would end up unintentionally as zeros.
+            \quad To fix this, simply assign all as normal except give the last thread its normal portion plus any remainder.
+            \begin{verbatim}
+            my_last_row = (my_id == nthreads - 1) ? my_first_row + stride : arrlen ;
+            \end{verbatim}
+
+
+            \item Exercise 4.2
+            {\bf 4.2}\>\> If we decide to physically divide a data structure among the threads, that is, if we decide to make various members local to individual threads, we need to consider at least three issues:
+            \begin{enumerate}
+            a. How are the members of the data structure used by the individual threads?
+            b. Where and how is the data structure initialized?
+            c. Where and how is the data structure used after its members are computed?
+            \end{enumerate}
+
+            What would we have to do in order to divide A and y among the threads? Dividing y wouldn’t be difficult–each thread could allocate a block of memory that could be used for storing its assigned components. Presumably, we could do the same for A–each thread could allocate a block of memory for storing its assigned rows. Modify the matrix-vector multiplication program so that it distributes both of these data structures. Can you “schedule” the input and output so that the threads can read in A and print out y? How does distributing A and y affect the run-time of the matrix-vector multiplication? (Don’t include input or output in your run-time.)
+            \vspace{0.5pc}
+            % Answer
+
+            \item Exercise 4.4
+            {\bf 4.4}\>\> The performance of the π calculation program that uses mutexes remains roughly constant once we increase the number of threads beyond the num- ber of available CPUs. What does this suggest about how the threads are scheduled on the available processors?
+            \vspace{0.5pc}
+            % Answer
+
+            \item Exercise 4.5
+            {\bf 4.5}\>\> Modify the mutex version of the π calculation program so that the critical section is in the for loop. How does the performance of this version compare to the performance of the original busy-wait version? How might we explain this?
+            \vspace{0.5pc}
+            % Answer
+
+            \item Exercise 4.6
+            {\bf 4.6}\>\> Modify the mutex version of the π calculation program so that it uses a semaphore instead of a mutex. How does the performance of this version compare with the mutex version?
+            \vspace{0.5pc}
+            % Answer
+
+            \item Exercise 4.8
+            {\bf 4.8}\>\> If a program uses more than one mutex, and the mutexes can be acquired in different orders, the program can deadlock. That is, threads may block forever waiting to acquire one of the mutexes. As an example, suppose that a program has two shared data structures–for example, two arrays or two linked lists–each of which has an associated mutex. Further suppose that each data structure can be accessed (read or modified) after acquiring the data structure’s associated mutex.
+            a. Suppose the program is run with two threads. Further suppose that the following sequence of events occurs:
+            What happens?
+            b. Would this be a problem if the program used busy-waiting (with two flag variables) instead of mutexes?
+            c. Would this be a problem if the program used semaphores instead of mutexes?
+            \vspace{0.5pc}
+            % Answer
+
+
+
+
+
+    \end{enumerate}
+
+
+\end{document}
+
+\message{ !name(hw2.tex) !offset(-93) }

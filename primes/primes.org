@@ -1,0 +1,12 @@
+#+TITLE: Primes
+
+
+* Primes and Primality Tests
+** Implemented
+*** Miller-Rabin (C#)
+*** TODO add more
+*** TODO Add pthreads multi-threading to the Miller-Rabin Test function
+**** [X] Can I add C code objects or libraries to a C# project?
+***** Seems unlikely or at least unreasonably difficult.
+**** [ ] Or do I need to convert the C# code to C code?
+***** The code is close to C native already -- the major obstacle would be converting the C# dynamic structures to C. I can include stretchy buffers for the dynamic array at least.

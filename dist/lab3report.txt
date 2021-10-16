@@ -1,0 +1,4 @@
+I worked with Leilani
+We wrote a program to multiply a vector by a scalar in C#.
+I learned how to use the Stopwatch class and the threading API in C#.
+I'd like to know how threading is implemented in C# and how the program blocks at the end of main until the threads are finished executing. Does the main thread terminate but the child threads are not swept by the garbage collector? Is the C# runtime just written so that Main will block until its child threads have terminated?

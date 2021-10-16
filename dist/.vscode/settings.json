@@ -1,0 +1,19 @@
+{
+    "C_Cpp.default.intelliSenseMode": "macos-clang-arm64",
+    "files.associations": {
+        "__threading_support": "cpp",
+        "pthread.h": "c",
+        "_pthread_types.h": "c",
+        "algorithm": "c",
+        "array": "c",
+        "bitset": "c",
+        "iterator": "c",
+        "memory": "c",
+        "numeric": "c",
+        "ratio": "c",
+        "utility": "c",
+        "*.tcc": "c",
+        "random": "c",
+        "type_traits": "c"
+    }
+}

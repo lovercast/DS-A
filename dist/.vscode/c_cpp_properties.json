@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "name": "Mac",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/opt/homebrew/Cellar/gcc/11.2.0/include/c++/11.1.0/**",
+                "/usr/local/include/benchmark/**",
+                "/Library/Developer/CommandLineTools/usr/include/c++/v1/**"
+            ],
+            "defines": [],
+            "macFrameworkPath": [],
+            "compilerPath": "/opt/homebrew/Cellar/llvm/12.0.1/bin/clang",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++17",
+            "compilerArgs": [
+                "-fopenmp"
+            ]
+        }
+    ],
+    "version": 4
+} 

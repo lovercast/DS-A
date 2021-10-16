@@ -6,38 +6,61 @@ using System.Diagnostics;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 
+// need a function to get next prime and put it in data
+// what does the class do?
+// multithreading in c#
+
 namespace PrimeTests
 {
     public class Benchmarking
     {
         public static readonly int lim = 300;
 
-        static List<int> primes;
-        static List<int> pseudos;
-        static List<int> comps; // TODO add list of composites
+        List<int> primes;
+        List<int> pseudos;
+        List<int> comps; // TODO add list of composites
 
         public static List<Tuple<int, bool>> primesresults;
         public static List<Tuple<int, bool>> pseudosresults;
 
         MillerRabin mr;
+        int cand;
+        int i;
 
-
-        public Benchmarking()
+        public int Next()
         {
+            if (i < primes.Count) {
+                return primes[i++];
+            } else if (i < primes.Count + pseudos.Count) {
+                return pseudos[i++ - primes.Count];
+            } else if (i < primes.Count + pseudos.Count + comps.Count) {
+                return comps[i++ - primes.Count - pseudos.Count];
+            } else {
+                return -1;
+            }
+        }
+
+        public void Initialize()
+        {
+            i = 0;
+
             Numbers nums = new Numbers(lim);
             nums.LoadNums();
             primes = nums.primes;
             pseudos = nums.pseudos;
+            comps = nums.comps;
 
             mr = new MillerRabin();
         }
 
-        [Benchmark]
-        public List<Tuple<int, bool>> BenchmarkIsPrime() => mr.GetResults(primes);
+        public Benchmarking()
+        {
+            // how do I tell benchmark to stop running when GetNextPrime hits -1?
+            cand = Next();
+        }
 
         [Benchmark]
-        public List<Tuple<int, bool>> BenchmarkIsPseudoPrime() => mr.GetResults(pseudos);
-
+        public bool BenchmarkIsPrime() => MillerRabin.IsPrime(cand);
     }
 
 
@@ -61,8 +84,13 @@ namespace PrimeTests
         public static void Main(string[] args)
         {
             // var summary = BenchmarkRunner.Run<MillerRabin>();
-
             Numbers nums = new Numbers(lim);
+
+            nums.GenerateComps();
+            nums.WriteCompsToFile();
+
+            return;
+
             nums.LoadNums();
             primes = nums.primes;
             pseudos = nums.pseudos;
@@ -155,9 +183,58 @@ namespace PrimeTests
         /// <summary>
         /// Writes lim primes to a csv file.
         /// </summary>
-        void GeneratePrimes()
+        public void GeneratePrimes()
         { 
             Lab1.NthPrimeNumber.WritePrimesToFile(lim);
+        }
+
+        /* Generate a list of odd composite numbers
+         * based on the list of primes. */
+        public void GenerateComps()
+        {
+            GetList("primes.csv", FileType.PRIME);
+            
+            /* get a primes from the list - first prime. */
+            int i = 1;
+            int c = primes[1];
+            foreach (int p in primes) {
+                while (c < p) {
+                    c += 2;
+                    if (c < p) 
+                        comps.Add(c);
+                }
+            }
+        }
+
+        public void WriteCompsToFile()
+        { 
+            const int rowlength = 100;
+            string numstr;
+            StringBuilder row;
+
+            string compfile = "comps.csv";
+            string cwd = Directory.GetCurrentDirectory();
+            compfile = $"{cwd}/{compfile}";
+            StreamWriter sw;
+            using (sw = new StreamWriter(compfile))
+            {
+                row = new StringBuilder();
+                for (int i = 0; i < comps.Count; i++) {
+
+                    numstr = comps[i].ToString();
+
+                    if (i == 0)
+                        row = row.Append($"{numstr}");
+                    else
+                        row = row.Append($",{numstr}");
+
+                    if (i % rowlength == rowlength - 1)
+                    {
+                        sw.WriteLine(row.ToString());
+                        row = new StringBuilder();
+                    }
+                }
+            }
         }
 
         public void TestLoadNums()
@@ -175,21 +252,26 @@ namespace PrimeTests
             string cwd = Directory.GetCurrentDirectory();
             string primefile = "primes.csv";
             string pseudofile = "pseudo.csv"; // pseudoprimes credit to oeis.org
+            string compfile = "comps.csv";
 
             if (OperatingSystem.IsWindows()) {
                 primefile = $"{cwd}\\{primefile}";
                 pseudofile = $"{cwd}\\{pseudofile}";
+                compfile = $"{cwd}\\{compfile}";
             }
             else { 
                 primefile = $"{cwd}/{primefile}";
                 pseudofile = $"{cwd}/{pseudofile}";
+                compfile = $"{cwd}/{compfile}";
             }
 
             Debug.Assert(File.Exists(primefile));
             Debug.Assert(File.Exists(pseudofile));
+            Debug.Assert(File.Exists(compfile));
 
             GetList(primefile,  FileType.PRIME);
             GetList(pseudofile, FileType.PSEUDO);
+            GetList(compfile, FileType.COMP);
         }
 
         /// <summary>
@@ -226,6 +308,9 @@ namespace PrimeTests
                     break;
                 case FileType.PSEUDO:
                     pseudos = l;
+                    break;
+                case FileType.COMP:
+                    comps = l;
                     break;
 
             }

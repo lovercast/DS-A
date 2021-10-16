@@ -107,17 +107,84 @@ namespace PrimeTests
             while (exp > 0) {
                 if (exp % 2 == 1)
                 {
-                    result *= power;
-                    result %= n;
+                    result = MulMod(result, power, n);
+                    //result *= power;
+                    //result %= n;
                 }
-                power *= power;
-                power %= n;
+                power = MulMod(power, power, n);
+                //power *= power;
+                //power %= n;
                 exp >>= 1;
             }
 
             if (result < 0)
                 return result + n;
             return result;
+        }
+        /* x * 65351 % 1234567 = 2393 */
+        public static void TestMulMod()
+        {
+            int x, y, n;
+            x = 45377; y = 65351; n = 1234567;
+            int want, dontwant, got;
+            want = 2393;
+            dontwant = (x * y) % n;  // unless variables -- error operation overflows at compile time
+            got = MulMod(x, y, n); 
+            Debug.Assert(want == got);
+            Debug.Assert(want != dontwant);
+        }
+
+        /// <summary>
+        /// x * y % n with reduction between additions.
+        /// Let stride be the first number that overflows n
+        /// under addition mod n. 
+        /// If x+1 <= n, then
+        /// the complexity is O(lg(y/stride)) = O(lg(y/(n/x + 1))) = O(lg(yx) - lg(n + x)).
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="n"></param>
+        /// <returns></returns>
+        public static int MulMod(int x, int y, int n)
+        {
+            if (x == 0)
+                return 0;
+
+            int total, count, stride, loops, i;
+            total = 0; count = 0;
+
+            stride = n / x + 1; // divide by zero exception 
+            if (y <= stride)
+            {
+                total = (x * y) % n;
+                return (total < 0) ? total + n : total;
+            }
+
+            /* What if stride is zero? */
+            if (stride == 0) { 
+                while (count < y) { // linear time ugh
+                    total += x;
+                    total %= n;
+                    ++count;
+                }
+                return (total < 0) ? total + n : total;
+            }
+
+            loops = y / stride;
+
+            for (i = 1; loops > 0; i *= 2, loops >>= 1) { 
+                if (loops % 2 == 1) {
+                    total += i * ((stride * x) % n);
+                    total %= n;
+                    count += i * stride;
+                }
+            }
+
+            if (count < y)
+                total += (y - count) * x;
+
+            total %= n;
+            return (total < 0) ? total + n : 0;
         }
 
         public static void TestCalcParams()

@@ -7,9 +7,10 @@ void *HelloWorld(void *);
 
 int main(int argc, char *argv[])
 {
-    if (argc < 2)
-        return 0;
-    int num_threads = atoi(argv[1]);
+    // if (argc < 2)
+    //     return 0;
+    // int num_threads = atoi(argv[1]);
+    int num_threads = 4;
     pthread_t *thread_array;
     char thread_args[num_threads][64];
 
@@ -28,8 +29,11 @@ int main(int argc, char *argv[])
         pthread_create(&thread_array[i], NULL, HelloWorld, &thread_args[i]);
     }
 
+    long receiver[num_threads]; // variable sized object may not be initialized (?)
+
     for (i = 0; i < num_threads; i++) {
-        pthread_join(thread_array[i], NULL);
+        pthread_join(thread_array[i], &receiver[i]);
+        printf("Hi there: %ld\n", receiver[i]);
     }
 
 }
@@ -38,5 +42,6 @@ void *HelloWorld(void *arg)
 {
     printf("%s\n", (char *)arg);
     printf("hello world\n");
-    return NULL;
+    long l = 100;
+    return &l;
 }

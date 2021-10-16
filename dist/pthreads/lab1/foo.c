@@ -4,6 +4,7 @@
 #include <unistd.h> /* getopt */
 #include <string.h> /* strncpy */
 #include <stdarg.h> /* va_list */
+#include <math.h> /* sqrt */
 // #include <assert.h> /* debugging */
 
 #define BUF_MAX 20
@@ -13,6 +14,7 @@
 
 void *thread_search(void *);                   /* thread function */
 void gen_random(int[], int, int);              /* populate random array */
+void printcolor_arr(int[], int, int);
 void print_arr(int[], int, int);
 void *xmalloc(size_t);                         /* malloc wrapper */
 void *xrealloc(void *, size_t);
@@ -77,9 +79,6 @@ int main(int argc, char *argv[])
     if (opt == 0 && argc < 4 || opt != 0 && argc < 5)
         fprintf(stderr, "\nMissing required arguments \n"), usage();
 
-    /* read value from keyboard */
-    printf("Please enter the value to search for: ");
-    fgets(buf, BUF_MAX, stdin);
 
     /* strtol() is recommended over atoi() for new code --
      * you learn something new everyday.   */
@@ -89,6 +88,11 @@ int main(int argc, char *argv[])
                 "Invalid abclen: %d", abclen);
     check_input((nthreads = strtol(opt ? argv[4] : argv[3], NULL, 10)) < 0 || nthreads > THREAD_MAX,
                 "Invalid nthreads: %d", nthreads);
+
+    /* read value from keyboard */
+    printf("\nPlease enter the value to search for (< %d): ", abclen);
+    fgets(buf, BUF_MAX, stdin);
+
     check_input((value = strtol(buf, NULL, 10)) < 0 || value >= abclen,
                 "Invalid value: %d", value);
 
@@ -107,7 +111,7 @@ int main(int argc, char *argv[])
 
     if (opt & VERBOSE) { /* print */
         printf("\nHere is your perfect array.\n");
-        print_arr(arrp, arrlen, nthreads);
+        printcolor_arr(arrp, arrlen, nthreads);
         printf("\n");
     }
 
@@ -122,7 +126,7 @@ int main(int argc, char *argv[])
         argp[i].abclen = abclen;
         argp[i].value = value;
         if(pthread_create(&tp[i], NULL, thread_search, &argp[i])) /* return non zero on error */
-            panic("pthread_create failed with id %d\n", i);
+            errorf("pthread_create failed with id %d\n", i);
     }
 
     /* What can we do between the create and the join???  */
@@ -131,15 +135,24 @@ int main(int argc, char *argv[])
     /* join threads */
     for (i = 0; i < nthreads; i++) {
         if(pthread_join(tp[i], NULL))
-            panic("pthread_join failed with id %d\n", i);
+            errorf("pthread_join failed with id %d\n", i);
+    }
+
+    printf("scores:\n");
+    print_scores(nthreads, scoresp);
+    printf("\n");
+
+    if (opt & VERBOSE) { /* print */
+        printf("Indices of value:\n");
+        print_arr(foundp, fidx, (int)sqrt(fidx));
+        printf("\n");
     }
 
     /* clean up */
     free(tp),        free(argp),        free(foundp);
     free(arrp),      free(scoresp);
 
-    printf("scores:\n");
-    print_scores(nthreads, scoresp);
+
 
 }
 
@@ -249,7 +262,21 @@ void print_scores(int nthreads, int *scoresp)
     }
 }
 
-void print_arr(int arr[], int arrlen, int nthreads)
+void print_arr(int arr[], int arrlen, int width)
+{
+    printf("[");
+    for (int i = 0; i < arrlen; i++) {
+        if (i % width == 0 && i != 0)
+            printf("[");
+        printf("%3d ", arr[i]);
+        if (i % width == width-1 && i != arrlen-1)
+            printf("]\n");
+    }
+    printf("]\n");
+
+}
+
+void printcolor_arr(int arr[], int arrlen, int nthreads)
 {
     int stride = arrlen/nthreads;
     printf("[");
@@ -280,11 +307,14 @@ void parse_opt(int c)
 
 void usage()
 {
-    fprintf(stderr, "\nUSAGE:\
-\n\tcc threadsort.c -o threadsort\
-\n\t./threadsort [OPTIONS] ARRLEN ABCLEN NTHREADS VALUE\
+    fprintf(stderr, "\nEXAMPLE:\
+\n\tcc foo.c -o foo\
+\n\t./foo -v 500 20 19\
+\n\t./foo 100000000 1000 12 (don't use -v)\
+\nUSAGE:\
+\n\t./foo [OPTIONS] ARRLEN ABCLEN NTHREADS\
 \n\tARRLEN --------------- length of the array to sort,\
-\n\tABCLEN ------------- length of the list of numbers to be sorted,\
+\n\tABCLEN --------------- length of the list of numbers to be sorted,\
 \n\tNTHREADS ------------- the number of threads,\
 \nOPTIONS:\
 \n\t-h  ------------------ help   (print this message)\
