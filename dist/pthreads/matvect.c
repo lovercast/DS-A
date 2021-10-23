@@ -5,7 +5,6 @@
 // Write a method to copy the data into the final product vector.
 // Schedule input and output? What does that mean?
 
-
 #include "matvect.h"
 
 // #ifndef SHARED
@@ -20,7 +19,7 @@
 double *A, *x, *y;
 #endif
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     int i, j;
 
@@ -29,8 +28,8 @@ int main(int argc, char *argv[])
     long N = strtol(argv[2], NULL, 10);
     long nthreads = strtol(argv[3], NULL, 10);
 
-    pthread_t *thread_arr;  // cannot assign to non-static member [member] with const qualified type
-    struct mat_arg *arg_arr;
+    pthread_t* thread_arr; // cannot assign to non-static member [member] with const qualified type
+    struct mat_arg* arg_arr;
 
     thread_arr = xmalloc(nthreads * sizeof(pthread_t));
     arg_arr = xmalloc(nthreads * sizeof(struct mat_arg)); // TODO fix the logic here -- should be tied to the number of threads, not the number of dims.
@@ -39,17 +38,16 @@ int main(int argc, char *argv[])
     double *A, *x, *y;
 #endif
 
-    A = xmalloc(M*N*sizeof(double)); // matrix
+    A = xmalloc(M * N * sizeof(double)); // matrix
     x = xmalloc(N * sizeof(double)); // vector
     y = xmalloc(N * sizeof(double));
 
-
-    // allocate individual pieces of the input matrix 
-    // array of tiny arrays, each with num columns the same, 
+    // allocate individual pieces of the input matrix
+    // array of tiny arrays, each with num columns the same,
     // copy the data over to the copies
 #ifndef SHARED
-    double **A_chunks = xmalloc(nthreads * sizeof(double *));
-    double **x_chunks = xmalloc(nthreads * sizeof(double *));
+    double** A_chunks = xmalloc(nthreads * sizeof(double*));
+    double** x_chunks = xmalloc(nthreads * sizeof(double*));
 #endif
     // need to divide the matrix here! might as well pass in the dimensions with the struct
     int stride = M / nthreads;
@@ -58,7 +56,7 @@ int main(int argc, char *argv[])
     for (i = 0; i < nthreads; ++i) {
         row0 = i * stride;
         row1 = (i < nthreads - 1) ? row0 + stride : M; // exclusive upper bound
-        nrows = row1-row0;
+        nrows = row1 - row0;
 
 #ifndef SHARED
         A_chunks[i] = xmalloc(nrows * N * sizeof(double));
@@ -73,7 +71,7 @@ int main(int argc, char *argv[])
         arg_arr[i].row0 = row0;
         arg_arr[i].row1 = row1;
         arg_arr[i].thread_time = 0;
-        arg_arr[i].rows = nrows;   
+        arg_arr[i].rows = nrows;
 #ifndef SHARED
         arg_arr[i].A = A_chunks[i]; // with distribution
         arg_arr[i].y = x_chunks[i];
@@ -81,22 +79,21 @@ int main(int argc, char *argv[])
         arg_arr[i].A = A; // without distribution
         arg_arr[i].y = y;
 #endif
-        arg_arr[i].x = x; 
+        arg_arr[i].x = x;
     }
-
 
     // time to create the dang threads!
     double tstart = omp_get_wtime();
-    for (i = 0; i < nthreads; ++i) 
+    for (i = 0; i < nthreads; ++i)
         pthread_create(&thread_arr[i], NULL, thread_fun, &arg_arr[i]);
-    for (i = 0; i < nthreads; ++i) 
+    for (i = 0; i < nthreads; ++i)
         pthread_join(thread_arr[i], NULL);
-    
-    // copy the result to the output vector
-    // for each thread, go to its argument struct, 
-    // copy arg->rows rows of data into y
+
+        // copy the result to the output vector
+        // for each thread, go to its argument struct,
+        // copy arg->rows rows of data into y
 #ifndef SHARED
-    for (i = 0; i < nthreads; ++i) 
+    for (i = 0; i < nthreads; ++i)
         memmove(&y[arg_arr[i].row0], arg_arr[i].y, arg_arr[i].rows * sizeof(double));
 #endif
     double tend = omp_get_wtime();
@@ -108,29 +105,27 @@ int main(int argc, char *argv[])
     printf("Num rows: %ld\n", M);
     printf("Num cols: %ld\n", N);
     printf("Total time: %g\n", total_time);
-    traverse_free(head);        
+    traverse_free(head);
     return 0;
 }
 
-
 /* clean up */
-void traverse_free(struct llist *self)
+void traverse_free(struct llist* self)
 {
-    if (self == NULL) 
+    if (self == NULL)
         return;
     free(self->ptr);
     traverse_free(self->next);
     free(self);
 }
 
- 
 // malloc wrapper
 // check for ENOMEM
 // add allocated pointer to list of allocated and increment number of allocated.
-void *xmalloc(size_t size)
+void* xmalloc(size_t size)
 {
-    void *ptr = malloc(size);
-    struct llist *new_list = malloc(sizeof(struct llist));
+    void* ptr = malloc(size);
+    struct llist* new_list = malloc(sizeof(struct llist));
     if (!ptr || !new_list)
         perror("malloc"), exit(1);
     if (head == NULL) {
@@ -145,7 +140,7 @@ void *xmalloc(size_t size)
     return ptr;
 }
 
-void *xrealloc(void *ptr, size_t size)
+void* xrealloc(void* ptr, size_t size)
 {
     ptr = realloc(ptr, size);
     if (!ptr)
@@ -153,17 +148,16 @@ void *xrealloc(void *ptr, size_t size)
     return ptr;
 }
 
-void *thread_fun(void *v)
+void* thread_fun(void* v)
 {
     int i, j;
     int N, id, row0, row1;
     double thread_time, rows, *A, *x;
-    struct mat_arg *arg = (struct mat_arg *)v;
+    struct mat_arg* arg = (struct mat_arg*)v;
 
     // write a script to line up the equals signs in a block of assignment code
-    row0        = arg->row0;
-    row1        = arg->row1;
-
+    row0 = arg->row0;
+    row1 = arg->row1;
 
     double tstart = omp_get_wtime();
 
@@ -171,9 +165,9 @@ void *thread_fun(void *v)
     for (i = row0; i < row1; ++i) {
         for (j = 0; j < N; ++j) {
 #ifndef SHARED
-            arg->y[i-row0] += *(arg->A + (i - row0) * N + j) * arg->x[j]; 
+            arg->y[i - row0] += *(arg->A + (i - row0) * N + j) * arg->x[j];
 #else
-            y[i] += *(A + i * N + j) * x[j]; 
+            y[i] += *(A + i * N + j) * x[j];
 #endif
         }
     }
@@ -184,7 +178,7 @@ void *thread_fun(void *v)
     return &arg->rows;
 }
 
-void print_vect(int N, double *a)
+void print_vect(int N, double* a)
 {
     printf("[ ");
     for (int i = 0; i < N; ++i) {
@@ -199,8 +193,8 @@ inline void print_mat(const int M, const int N, const double (*restrict X)[M][N]
         for (int j = 0; j < N; j++) {
             if (j == 0)
                 printf("[");
-            printf("%3g ",(*X)[i][j]);
-            if (j == N-1)
+            printf("%3g ", (*X)[i][j]);
+            if (j == N - 1)
                 printf("]\n");
         }
     }
