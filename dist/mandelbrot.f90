@@ -22,8 +22,8 @@ module m_compute_mandelbrot
   ! --------------------------
 
   implicit none                                             ! explicit type only
-  integer, parameter :: w         = 2560                    ! w of image
-  integer, parameter :: h         = 1920                    ! h of image
+  integer, parameter :: w         = 2560                    ! width of image
+  integer, parameter :: h         = 1920                    ! height of image
   integer, parameter :: loops     = 255                     ! mandelbrot iters.
   real,    parameter :: center    = -0.7                    ! center of image
   real,    parameter :: radius    = 3.077 / 2.              ! from ctr of image
@@ -120,8 +120,8 @@ module m_compute_mandelbrot
     write(1) h1
     write(1) h2
 
-	! Loop through image matrix & write to file 
-	! according to the rules for coloring.
+    ! Loop through image matrix & write to file 
+    ! according to the rules for coloring.
     do col=1,h
       do row=1,w
         color = image(row,col)
